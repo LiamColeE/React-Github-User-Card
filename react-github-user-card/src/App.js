@@ -1,26 +1,65 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import GitHubUserDisplay from "./Components/GitHubUserDisplay"
+import FollowersDisplay from "./Components/FollowersDisplay"
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  // you will need a place to store your state in this component.
+  constructor() {
+    super();
+    this.state = {
+      user:{
+
+      },
+      followers:[
+
+      ]
+    }
+  }
+
+  componentDidMount(){
+    fetch('https://api.github.com/users/JacobAngulo')
+    .then((res => res.json()))
+    .then(
+      (res) =>{
+        console.log(res)
+        this.setState({user: res})
+        console.log(this.state);
+      }
+    )
+    .catch(
+      (err) =>{
+        console.log("fetch failed" + err)
+      }
+    );
+
+    fetch('https://api.github.com/users/JacobAngulo/followers')
+    .then((res => res.json()))
+    .then(
+      (res) =>{
+        console.log(res)
+        this.setState({followers: res})
+        console.log(this.state);
+      }
+    )
+    .catch(
+      (err) =>{
+        console.log("fetch failed" + err)
+      }
+    )
+  }
+
+  // design `App` to be the parent component of your application.
+  // this component is going to take care of state, and any change handlers you need to work with your state
+  render() {
+    return (
+      <div>
+        <h1>USER</h1>
+        <GitHubUserDisplay user={this.state.user}/>
+        <h2>FOLLOWERS</h2>
+        <FollowersDisplay followers={this.state.followers}/>
+      </div>
+    );
+  }
 }
 
 export default App;
